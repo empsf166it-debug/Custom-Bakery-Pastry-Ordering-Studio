@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: #FFFAF0;
+  color: #3E1C00;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+.dark body {
+  background-color: #1a0f08;
+  color: #F5F5DC;
+}
+
+/* Utilities */
+.text-outline {
+  -webkit-text-stroke: 1px currentColor;
+  color: transparent;
+}
+
+.clip-reveal {
+  clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
+  transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.aos-animate .clip-reveal, .clip-reveal.aos-animate {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.magnetic {
+  transition: transform 0.2s ease-out;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.hover-3d-tilt:hover {
+  transform: rotateX(5deg) rotateY(-5deg) scale(1.05);
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+.floating-slow {
+  animation: float 8s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #C68E17;
+  border-radius: 10px;
+}
+
+/* Mobile menu transition */
+#mobile-menu {
+  transition: transform 0.3s ease-in-out;
+}
+
+[dir="rtl"] {
+  text-align: right;
+}

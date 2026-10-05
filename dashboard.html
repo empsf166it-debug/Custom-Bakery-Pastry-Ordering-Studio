@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maison Dorée Pâtisserie | Baker Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            ivory: '#FFFAF0',
+                            cream: '#FFFDD0',
+                            choco: '#3E1C00',
+                            caramel: '#C68E17',
+                            beige: '#F5F5DC',
+                            gold: '#D4AF37',
+                            darkChoco: '#2A1300'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Chart.js for dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+        .dark body { background-color: #1a0f08; color: #F5F5DC; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #C68E17; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-[#1a0f08] dark:text-[#F5F5DC] flex h-screen overflow-hidden antialiased selection:bg-brand-caramel selection:text-white">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-white dark:bg-[#2A1300] border-r border-gray-200 dark:border-[#F5F5DC]/10 flex-shrink-0 flex flex-col transition-transform duration-300 absolute lg:relative z-40 h-full -translate-x-full lg:translate-x-0">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-[#F5F5DC]/10">
+            <a href="index.html" class="flex items-center gap-2 text-brand-choco dark:text-brand-ivory">
+                <div class="w-8 h-8 bg-brand-gold rounded-full flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V8l4 3 3-6 3 6 4-3v13"></path></svg>
+                </div>
+                <span class="font-serif font-bold text-lg">Maison Dorée</span>
+            </a>
+            <button id="close-sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:hover:text-[#F5F5DC]">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto py-4">
+            <nav class="px-4 space-y-1">
+                <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Management</p>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 bg-brand-caramel/10 text-brand-caramel rounded-lg font-medium">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    Overview
+                </a>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    Orders
+                    <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Cake Designs
+                </a>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    Production Queue
+                </a>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Delivery Slots
+                </a>
+
+                <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-6">Catalog</p>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">Products</a>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">Pricing</a>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">Inventory</a>
+                
+                <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-6">System</p>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">Customers</a>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">Analytics</a>
+                <a href="#" class="flex items-center gap-3 px-2 py-2.5 text-gray-600 dark:text-[#F5F5DC]/80 hover:bg-gray-100 dark:hover:bg-[#3E1C00] rounded-lg font-medium transition-colors">Settings</a>
+            </nav>
+        </div>
+        
+        <div class="p-4 border-t border-gray-200 dark:border-[#F5F5DC]/10">
+            <a href="index.html" class="flex items-center gap-3 px-2 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <!-- Top Nav -->
+        <header class="h-16 bg-white dark:bg-[#2A1300] border-b border-gray-200 dark:border-[#F5F5DC]/10 flex items-center justify-between px-4 sm:px-6 z-10 flex-shrink-0">
+            <div class="flex items-center gap-4">
+                <button id="open-sidebar" class="lg:hidden text-gray-500 hover:text-gray-700 dark:hover:text-[#F5F5DC]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <h1 class="text-xl font-bold font-serif hidden sm:block">Dashboard Overview</h1>
+            </div>
+            
+            <div class="flex items-center gap-3 sm:gap-5">
+                <button id="dash-theme-toggle" class="text-gray-500 hover:text-brand-caramel transition-colors">
+                    <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+                    <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+                </button>
+                <div class="relative">
+                    <button class="text-gray-500 hover:text-brand-caramel transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#2A1300]"></span>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-[#F5F5DC]/10">
+                    <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=100&auto=format&fit=crop" class="w-8 h-8 rounded-full object-cover" alt="Julian Mercier">
+                    <div class="hidden sm:block text-sm">
+                        <p class="font-bold">Julian Mercier</p>
+                        <p class="text-xs text-gray-500">Head Baker</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            
+            <div id="dyn-view" class="hidden"></div>
+            <!-- Top Stats -->
+            <div data-views="overview" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white dark:bg-[#2A1300] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#F5F5DC]/10">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 dark:text-[#F5F5DC]/60 text-sm font-medium mb-1">Today's Orders</p>
+                            <h3 class="text-3xl font-bold text-gray-900 dark:text-[#F5F5DC]" id="stat-orders">12</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                        </div>
+                    </div>
+                    <p class="text-green-500 text-sm font-medium mt-4 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        <span>+2 from yesterday</span>
+                    </p>
+                </div>
+                
+                <div class="bg-white dark:bg-[#2A1300] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#F5F5DC]/10">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 dark:text-[#F5F5DC]/60 text-sm font-medium mb-1">Revenue</p>
+                            <h3 class="text-3xl font-bold text-gray-900 dark:text-[#F5F5DC]" id="stat-rev">$1,450</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                    </div>
+                    <p class="text-green-500 text-sm font-medium mt-4 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        <span>+12% this week</span>
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-[#2A1300] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#F5F5DC]/10">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 dark:text-[#F5F5DC]/60 text-sm font-medium mb-1">In Production</p>
+                            <h3 class="text-3xl font-bold text-gray-900 dark:text-[#F5F5DC]" id="stat-prod">5</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-brand-caramel/10 flex items-center justify-center text-brand-caramel">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-sm font-medium mt-4 flex items-center gap-1">
+                        <span>Currently baking or decorating</span>
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-[#2A1300] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#F5F5DC]/10">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 dark:text-[#F5F5DC]/60 text-sm font-medium mb-1">Inventory Alerts</p>
+                            <h3 class="text-3xl font-bold text-red-500" id="stat-inv">2</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                    </div>
+                    <p class="text-red-500 text-sm font-medium mt-4 flex items-center gap-1">
+                        <span>Low on Valrhona Chocolate</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Charts and Tables -->
+            <div id="chart-slots-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                
+                <!-- Main Chart -->
+                <div data-views="overview analytics" class="lg:col-span-2 bg-white dark:bg-[#2A1300] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#F5F5DC]/10">
+                    <h3 class="font-serif font-bold text-xl mb-6">Revenue & Orders (This Week)</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Delivery Slots -->
+                <div data-views="overview slots" class="bg-white dark:bg-[#2A1300] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#F5F5DC]/10 flex flex-col">
+                    <h3 class="font-serif font-bold text-xl mb-6">Today's Delivery Slots</h3>
+                    <div class="space-y-4 flex-1">
+                        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-[#3E1C00]/50 rounded-xl">
+                            <div>
+                                <p class="font-bold">09:00 - 11:00</p>
+                                <p class="text-xs text-gray-500">3/5 booked</p>
+                            </div>
+                            <span class="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-xs font-bold">Available</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-[#3E1C00]/50 rounded-xl border border-brand-caramel/20">
+                            <div>
+                                <p class="font-bold">11:00 - 13:00</p>
+                                <p class="text-xs text-gray-500">4/5 booked</p>
+                            </div>
+                            <span class="px-2 py-1 bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 rounded text-xs font-bold">Almost Full</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-100 dark:bg-[#3E1C00] rounded-xl opacity-60">
+                            <div>
+                                <p class="font-bold">13:00 - 15:00</p>
+                                <p class="text-xs text-gray-500">5/5 booked</p>
+                            </div>
+                            <span class="px-2 py-1 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded text-xs font-bold">Full</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-[#3E1C00]/50 rounded-xl">
+                            <div>
+                                <p class="font-bold">15:00 - 17:00</p>
+                                <p class="text-xs text-gray-500">1/5 booked</p>
+                            </div>
+                            <span class="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-xs font-bold">Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kanban Production Queue -->
+            <div data-views="overview queue" class="mb-8">
+                <h3 class="font-serif font-bold text-xl mb-6">Production Queue (Kanban)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 pb-4 items-start">
+                    
+                    <!-- New -->
+                    <div class="bg-gray-100 dark:bg-[#2A1300] rounded-2xl p-4 flex flex-col">
+                        <h4 class="font-bold mb-4 flex justify-between">New <span class="bg-gray-200 dark:bg-[#3E1C00] px-2 py-0.5 rounded text-xs">2</span></h4>
+                        <div class="flex-1 overflow-y-auto space-y-3 pr-2">
+                            <div class="bg-white dark:bg-[#3E1C00] p-4 rounded-xl shadow-sm cursor-grab border-l-4 border-blue-500">
+                                <div class="flex justify-between mb-2"><span class="text-xs font-bold text-gray-500">#ORD-1042</span><span class="text-xs text-brand-caramel font-bold">Due: 14:00</span></div>
+                                <h5 class="font-bold mb-1">Custom 8" Vanilla</h5>
+                                <p class="text-xs text-gray-500 dark:text-[#F5F5DC]/60 mb-3">Fresh flowers, Minimalist</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="w-6 h-6 rounded-full bg-gray-200 text-xs flex items-center justify-center">S</div>
+                                    <button class="text-xs text-blue-500 font-medium hover:underline">Start Prep</button>
+                                </div>
+                            </div>
+                            <div class="bg-white dark:bg-[#3E1C00] p-4 rounded-xl shadow-sm cursor-grab border-l-4 border-blue-500">
+                                <div class="flex justify-between mb-2"><span class="text-xs font-bold text-gray-500">#ORD-1043</span><span class="text-xs text-brand-caramel font-bold">Due: 16:00</span></div>
+                                <h5 class="font-bold mb-1">12x Assorted Macarons</h5>
+                                <p class="text-xs text-gray-500 dark:text-[#F5F5DC]/60 mb-3">Gift box packaging</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preparing/Baking -->
+                    <div class="bg-gray-100 dark:bg-[#2A1300] rounded-2xl p-4 flex flex-col">
+                        <h4 class="font-bold mb-4 flex justify-between">Preparing & Baking <span class="bg-gray-200 dark:bg-[#3E1C00] px-2 py-0.5 rounded text-xs">1</span></h4>
+                        <div class="flex-1 overflow-y-auto space-y-3 pr-2">
+                            <div class="bg-white dark:bg-[#3E1C00] p-4 rounded-xl shadow-sm cursor-grab border-l-4 border-orange-500">
+                                <div class="flex justify-between mb-2"><span class="text-xs font-bold text-gray-500">#ORD-1040</span><span class="text-xs text-orange-500 font-bold flex items-center gap-1"><svg class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> In Oven</span></div>
+                                <h5 class="font-bold mb-1">Modern Black Forest</h5>
+                                <p class="text-xs text-gray-500 dark:text-[#F5F5DC]/60 mb-3">Signature Cake, 10"</p>
+                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mb-2">
+                                    <div class="bg-orange-500 h-1.5 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decorating -->
+                    <div class="bg-gray-100 dark:bg-[#2A1300] rounded-2xl p-4 flex flex-col">
+                        <h4 class="font-bold mb-4 flex justify-between">Decorating <span class="bg-gray-200 dark:bg-[#3E1C00] px-2 py-0.5 rounded text-xs">2</span></h4>
+                        <div class="flex-1 overflow-y-auto space-y-3 pr-2">
+                            <div class="bg-white dark:bg-[#3E1C00] p-4 rounded-xl shadow-sm cursor-grab border-l-4 border-purple-500">
+                                <div class="flex justify-between mb-2"><span class="text-xs font-bold text-gray-500">#ORD-1038</span></div>
+                                <h5 class="font-bold mb-1">Custom 3-Tier Wedding</h5>
+                                <p class="text-xs text-gray-500 dark:text-[#F5F5DC]/60 mb-3">Gold leaf, White roses</p>
+                                <div class="flex justify-between items-center mt-2">
+                                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=100&auto=format&fit=crop" class="w-6 h-6 rounded-full" alt="Elena">
+                                    <span class="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 px-2 py-1 rounded">Elena R.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ready/Delivered -->
+                    <div class="bg-gray-100 dark:bg-[#2A1300] rounded-2xl p-4 flex flex-col">
+                        <h4 class="font-bold mb-4 flex justify-between">Ready for Delivery <span class="bg-gray-200 dark:bg-[#3E1C00] px-2 py-0.5 rounded text-xs">3</span></h4>
+                        <div class="flex-1 overflow-y-auto space-y-3 pr-2">
+                            <div class="bg-white dark:bg-[#3E1C00] p-4 rounded-xl shadow-sm cursor-grab border-l-4 border-green-500 opacity-75">
+                                <div class="flex justify-between mb-2"><span class="text-xs font-bold text-gray-500">#ORD-1035</span><span class="text-xs text-green-500 font-bold">Slot: 11:00</span></div>
+                                <h5 class="font-bold mb-1 line-through">Lemon Meringue</h5>
+                                <button class="w-full mt-2 py-1 bg-green-500 text-white rounded text-xs font-bold hover:bg-green-600 transition-colors">Mark Delivered</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar Toggle (Mobile)
+            const sidebar = document.getElementById('sidebar');
+            const openBtn = document.getElementById('open-sidebar');
+            const closeBtn = document.getElementById('close-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            const toggleSidebar = () => {
+                const dir = document.documentElement.getAttribute('dir');
+                if (sidebar.classList.contains('-translate-x-full') || sidebar.classList.contains('translate-x-full')) {
+                    sidebar.classList.remove('-translate-x-full', 'translate-x-full');
+                    overlay.classList.remove('hidden');
+                } else {
+                    if (dir === 'rtl') {
+                        sidebar.classList.add('translate-x-full');
+                    } else {
+                        sidebar.classList.add('-translate-x-full');
+                    }
+                    overlay.classList.add('hidden');
+                }
+            };
+
+            openBtn.addEventListener('click', toggleSidebar);
+            closeBtn.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+
+            // Theme Toggle
+            const themeBtn = document.getElementById('dash-theme-toggle');
+            const root = document.documentElement;
+            
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                root.classList.add('dark');
+            }
+
+            themeBtn.addEventListener('click', () => {
+                root.classList.toggle('dark');
+                localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+                updateChartTheme(); // Update chart on theme change
+            });
+
+
+            // Chart.js Initialization
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            
+            let revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: [850, 1120, 950, 1450, 2100, 2800, 1900],
+                        borderColor: '#C68E17',
+                        backgroundColor: 'rgba(198, 142, 23, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: root.classList.contains('dark') ? '#374151' : '#f3f4f6'
+                            },
+                            ticks: {
+                                color: root.classList.contains('dark') ? '#9ca3af' : '#6b7280'
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: root.classList.contains('dark') ? '#9ca3af' : '#6b7280'
+                            }
+                        }
+                    }
+                }
+            });
+
+            function updateChartTheme() {
+                const isDark = root.classList.contains('dark');
+                const gridColor = isDark ? '#374151' : '#f3f4f6';
+                const tickColor = isDark ? '#9ca3af' : '#6b7280';
+                
+                revenueChart.options.scales.y.grid.color = gridColor;
+                revenueChart.options.scales.y.ticks.color = tickColor;
+                revenueChart.options.scales.x.ticks.color = tickColor;
+                revenueChart.update();
+            }
+
+            // Sidebar navigation (view switching)
+            const card = 'bg-white dark:bg-[#2A1300] p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-[#F5F5DC]/10';
+            const badge = (t, c) => `<span class="px-2 py-1 rounded text-xs font-bold ${c}">${t}</span>`;
+            const green = 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
+            const orange = 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400';
+            const red = 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+            const blue = 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
+            const purple = 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300';
+            const table = (title, heads, rows, extra = '') => `
+                <div class="${card}">
+                    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+                        <h3 class="font-serif font-bold text-xl">${title}</h3>${extra}
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead><tr class="text-xs uppercase tracking-wider text-gray-500 dark:text-[#F5F5DC]/60 border-b border-gray-200 dark:border-[#F5F5DC]/10">${heads.map(h => `<th class="py-3 pr-4 font-semibold">${h}</th>`).join('')}</tr></thead>
+                            <tbody>${rows.map(r => `<tr class="border-b border-gray-100 dark:border-[#F5F5DC]/5 hover:bg-gray-50 dark:hover:bg-[#3E1C00]/40 transition-colors">${r.map((c, i) => `<td class="py-3 pr-4 ${i === 0 ? 'font-bold' : ''}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>`;
+            const stock = (pct, c) => `<div class="flex items-center gap-2"><div class="w-24 bg-gray-200 dark:bg-[#3E1C00] rounded-full h-1.5"><div class="${c} h-1.5 rounded-full" style="width:${pct}%"></div></div><span class="text-xs">${pct}%</span></div>`;
+            const designCards = [
+                ['Royal Framboise', 'Almond sponge, raspberry confit', 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=500&auto=format&fit=crop', 'Published'],
+                ['Berry Celebration', '3-tier, fresh berries', 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=500&auto=format&fit=crop', 'Published'],
+                ['Ombre Buttercream', 'Chocolate petal piping', 'https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=500&auto=format&fit=crop', 'Draft'],
+                ['Parisian Macarons', 'Assorted gift box', 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&auto=format&fit=crop', 'Published']
+            ];
+            const views = {
+                orders: { title: 'Orders', html: () => table('Recent Orders', ['Order', 'Customer', 'Item', 'Due', 'Total', 'Status'], [
+                    ['#ORD-1042', 'Sarah M.', 'Custom 8" Vanilla', 'Today 14:00', '$65.00', badge('New', blue)],
+                    ['#ORD-1043', 'James L.', '12x Assorted Macarons', 'Today 16:00', '$38.00', badge('New', blue)],
+                    ['#ORD-1040', 'Priya K.', 'Modern Black Forest', 'Today 17:00', '$85.00', badge('Baking', orange)],
+                    ['#ORD-1038', 'Elena R.', 'Custom 3-Tier Wedding', 'Tomorrow', '$420.00', badge('Decorating', purple)],
+                    ['#ORD-1035', 'Tom H.', 'Lemon Meringue', 'Today 11:00', '$32.00', badge('Ready', green)]
+                ]) },
+                designs: { title: 'Cake Designs', html: () => `<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">${designCards.map(d => `
+                    <div class="${card} !p-0 overflow-hidden">
+                        <img src="${d[2]}" alt="${d[0]}" class="w-full h-44 object-cover">
+                        <div class="p-4"><div class="flex justify-between items-start mb-1"><h4 class="font-bold">${d[0]}</h4>${badge(d[3], d[3] === 'Draft' ? orange : green)}</div><p class="text-xs text-gray-500 dark:text-[#F5F5DC]/60">${d[1]}</p></div>
+                    </div>`).join('')}</div>` },
+                queue: { title: 'Production Queue' },
+                slots: { title: 'Delivery Slots' },
+                products: { title: 'Products', html: () => table('Product Catalog', ['Product', 'Category', 'Price', 'Stock', 'Status'], [
+                    ['Royal Framboise', 'Signature Cake', '$65.00', '12', badge('Active', green)],
+                    ['Parisian Macarons (12)', 'Macarons', '$38.00', '40', badge('Active', green)],
+                    ['Artisan Chocolates (box)', 'Chocolates', '$28.00', '25', badge('Active', green)],
+                    ['Lemon Meringue Tart', 'Tarts', '$32.00', '4', badge('Low', orange)],
+                    ['Chocolate Eclair', 'Pastries', '$6.50', '0', badge('Sold out', red)]
+                ]) },
+                pricing: { title: 'Pricing', html: () => table('Cake Pricing', ['Item', 'Option', 'Base Price', 'Add-on'], [
+                    ['Cake Size', '6 inch', '$45.00', '-'], ['Cake Size', '8 inch', '$65.00', '-'],
+                    ['Cake Size', '10 inch', '$85.00', '-'], ['Cake Size', '12 inch', '$110.00', '-'],
+                    ['Flavor', 'Red Velvet / Strawberry', '-', '+$5.00'], ['Flavor', 'Pistachio', '-', '+$10.00'], ['Delivery', 'Local', '$15.00', '-']
+                ]) },
+                inventory: { title: 'Inventory', html: () => table('Ingredient Stock', ['Ingredient', 'Supplier', 'Quantity', 'Level', 'Status'], [
+                    ['Valrhona Chocolate', 'Valrhona', '4 kg', stock(15, 'bg-red-500'), badge('Low', red)],
+                    ['Madagascar Vanilla', 'Bourbon Co.', '1.2 kg', stock(60, 'bg-green-500'), badge('Good', green)],
+                    ['Organic Butter', 'Local Dairy', '18 kg', stock(80, 'bg-green-500'), badge('Good', green)],
+                    ['Almond Flour', 'Nut House', '6 kg', stock(35, 'bg-orange-500'), badge('Reorder', orange)],
+                    ['Edible Gold Leaf', 'Aurum', '20 sheets', stock(45, 'bg-orange-500'), badge('Fair', orange)]
+                ]) },
+                customers: { title: 'Customers', html: () => table('Customers', ['Name', 'Email', 'Orders', 'Total Spent', 'Since'], [
+                    ['Sarah Mitchell', 'sarah@example.com', '8', '$612.00', '2024'],
+                    ['James Lee', 'james@example.com', '3', '$148.00', '2025'],
+                    ['Priya Kapoor', 'priya@example.com', '12', '$1,040.00', '2023'],
+                    ['Elena Rossi', 'elena@example.com', '5', '$985.00', '2024']
+                ]) },
+                analytics: { title: 'Analytics', html: () => `<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">${[['Avg. Order Value', '$58.40'], ['Repeat Customers', '64%'], ['On-time Delivery', '97%']].map(k => `<div class="${card}"><p class="text-gray-500 dark:text-[#F5F5DC]/60 text-sm font-medium mb-1">${k[0]}</p><h3 class="text-3xl font-bold">${k[1]}</h3></div>`).join('')}</div>` },
+                settings: { title: 'Settings', html: () => `<div class="${card} max-w-2xl"><h3 class="font-serif font-bold text-xl mb-6">Bakery Settings</h3>
+                    <div class="space-y-4">${[['Bakery Name', 'Maison Dorée'], ['Contact Email', 'hello@maisondoree.com'], ['Phone', '+1 (234) 567-8900']].map(f => `<div><label class="block text-sm font-medium mb-1">${f[0]}</label><input type="text" value="${f[1]}" class="w-full bg-white dark:bg-[#1a0f08] border border-gray-200 dark:border-[#F5F5DC]/20 rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-caramel"></div>`).join('')}
+                    <button type="button" class="px-6 py-2.5 bg-brand-caramel text-white rounded-xl font-medium hover:bg-brand-gold transition-colors" onclick="this.textContent='Saved ✓'">Save Changes</button></div></div>` }
+            };
+            const overviewKeys = { overview: 1 };
+            const dynView = document.getElementById('dyn-view');
+            const pageTitle = document.querySelector('header h1');
+            const gridWrap = document.getElementById('chart-slots-grid');
+            const navLinks = [...document.querySelectorAll('#sidebar nav a')];
+            const keyFor = { 'Overview': 'overview', 'Orders': 'orders', 'Cake Designs': 'designs', 'Production Queue': 'queue', 'Delivery Slots': 'slots', 'Products': 'products', 'Pricing': 'pricing', 'Inventory': 'inventory', 'Customers': 'customers', 'Analytics': 'analytics', 'Settings': 'settings' };
+            const activeCls = ['bg-brand-caramel/10', 'text-brand-caramel'];
+            const idleCls = ['text-gray-600', 'dark:text-[#F5F5DC]/80', 'hover:bg-gray-100', 'dark:hover:bg-[#3E1C00]'];
+
+            const showView = (key) => {
+                const v = views[key];
+                let anyGrid = 0;
+                document.querySelectorAll('[data-views]').forEach(el => {
+                    const on = el.dataset.views.split(' ').includes(key);
+                    el.classList.toggle('hidden', !on);
+                    if (on && gridWrap.contains(el)) anyGrid++;
+                });
+                gridWrap.classList.toggle('hidden', anyGrid === 0);
+                gridWrap.style.display = anyGrid === 1 ? 'block' : '';
+                if (v && v.html) { dynView.innerHTML = v.html(); dynView.classList.remove('hidden'); dynView.classList.add('mb-8'); }
+                else { dynView.innerHTML = ''; dynView.classList.add('hidden'); }
+                pageTitle.textContent = key === 'overview' ? 'Dashboard Overview' : v.title;
+                navLinks.forEach(a => {
+                    const on = keyFor[a.textContent.replace(/\s+\d+$/, '').trim()] === key;
+                    activeCls.forEach(c => a.classList.toggle(c, on));
+                    idleCls.forEach(c => a.classList.toggle(c, !on));
+                });
+                document.querySelector('main > div:last-child').scrollTop = 0;
+                if (anyGrid) setTimeout(() => revenueChart.resize(), 50);
+                if (window.innerWidth < 1024 && !overlay.classList.contains('hidden')) toggleSidebar();
+                history.replaceState(null, '', '#' + key);
+            };
+            navLinks.forEach(a => {
+                const key = keyFor[a.textContent.replace(/[\s\d]+$/, '').trim()];
+                if (!key) return;
+                a.addEventListener('click', (e) => { e.preventDefault(); showView(key); });
+            });
+            const initial = location.hash.slice(1);
+            if (views[initial]) showView(initial);
+
+            // Animate stats
+            const animateValue = (id, start, end, duration, prefix="") => {
+                let obj = document.getElementById(id);
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerHTML = prefix + Math.floor(progress * (end - start) + start).toLocaleString();
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            };
+
+            // Run animations on load
+            setTimeout(() => {
+                animateValue("stat-orders", 0, 12, 1000);
+                animateValue("stat-rev", 0, 1450, 1000, "$");
+                animateValue("stat-prod", 0, 5, 1000);
+            }, 300);
+        });
+    </script>
+</body>
+</html>
